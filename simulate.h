@@ -21,6 +21,7 @@ public:
 
 	std::vector <char> colors;
 	Simulation(std::vector < std::vector<char> >, float, float, std::vector <int>);
+  	void run(int);
 
 };
 

@@ -40,10 +40,27 @@ using namespace std;
            0.25 0.25
 */
 vector< vector <float> > initialize_beliefs(vector< vector <char> > grid) {
-	vector< vector <float> > newGrid;
+	vector< vector <float> > newGrid, tempGrid;
 
 	// your code here
-	
+  vector <float> tempRow;
+  
+  int height, width, area;
+  float belief_per_cell;
+  
+  height = grid.size();
+  width = grid[0].size();
+  area = height * width;
+  belief_per_cell = 1.0 / area;
+
+   for(int i = 0; i<height; i++){
+    tempRow.clear();
+    for(int j = 0; j<width; j++){
+      tempRow.push_back(belief_per_cell);
+    }
+    newGrid.push_back(tempRow);
+  }
+  
 	return newGrid;
 }
 
@@ -92,7 +109,22 @@ vector< vector <float> > move(int dy, int dx,
   vector < vector <float> > newGrid;
 
   // your code here
+  int height, width, new_i, new_j;
+  float belief_per_cell;
+  
+  height = beliefs.size();
+  width = beliefs[0].size();
+  
+  newGrid = zeros(height,width);
 
+  for(int i = 0; i<height; i++){
+    for(int j = 0; j<width; j++){
+      new_i = (i + dy) % height;
+      new_j = (j + dx) % width;
+      newGrid[new_i][new_j] = beliefs[i][j];
+    }
+  }
+    
   return blur(newGrid, blurring);
 }
 
@@ -143,6 +175,28 @@ vector< vector <float> > sense(char color,
 	vector< vector <float> > newGrid;
 
 	// your code here
+  vector <float> tempRow;
+  int height, width;
+  float probability;
+  
+  probability = 0;
+  height = grid.size();
+  width = grid[0].size();
+  
+  for(int row = 0; row<height; row++){
+    tempRow.clear();
+    for(int col = 0; col<width; col++){
+      
+      if (grid[row][col]==color){
+        probability=beliefs[row][col] * p_hit;
+      } else{
+        probability=beliefs[row][col] * p_miss;
+      }
+      tempRow.push_back(probability);
+    }
+    newGrid.push_back(tempRow);
+  }
+  
 
 	return normalize(newGrid);
 }
